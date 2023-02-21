@@ -11,7 +11,9 @@ class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+        
+        ApiService.shareInstance.getPopularMovieList(page: 1)
+        ApiService.shareInstance.getUpcomingMovieList(page: 1)
     }
 
 

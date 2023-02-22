@@ -10,7 +10,7 @@ import Foundation
 struct Configs {
     
     struct Network {
-           static let apiBaseUrl = "https://api.themoviedb.org/3/movie/"
+           static let apiBaseUrl = "https://api.themoviedb.org/3/"
            static let apiKey = "26763d7bf2e94098192e629eb975dab0"
        }
     

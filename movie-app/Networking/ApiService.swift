@@ -12,7 +12,7 @@ class ApiService {
 
     
     func getPopularMovieList(page: Int) -> Void {
-        let url = URL(string: Configs.Network.apiBaseUrl + "popular?" + "api_key=\(Configs.Network.apiKey)" + "&page=\(page)")!
+        let url = URL(string: Configs.Network.apiBaseUrl + "movie/popular?" + "api_key=\(Configs.Network.apiKey)" + "&page=\(page)")!
         let task = URLSession.shared.dataTask(with: url, completionHandler: {data, response, error in
             if error != nil || data == nil {
                     print("Client error!")
@@ -43,7 +43,7 @@ class ApiService {
     }
     
     func getUpcomingMovieList(page: Int) -> Void {
-        let url = URL(string: Configs.Network.apiBaseUrl + "upcoming?" + "api_key=\(Configs.Network.apiKey)" + "&page=\(page)")!
+        let url = URL(string: Configs.Network.apiBaseUrl + "movie/upcoming?" + "api_key=\(Configs.Network.apiKey)" + "&page=\(page)")!
         let task = URLSession.shared.dataTask(with: url, completionHandler: {data, response, error in
             if error != nil || data == nil {
                     print("Client error!")
@@ -74,7 +74,7 @@ class ApiService {
     }
     
     func getCastList(ID: Int) -> Void {
-        let url = URL(string: Configs.Network.apiBaseUrl + "\(ID)/credits?" + "api_key=\(Configs.Network.apiKey)")!
+        let url = URL(string: Configs.Network.apiBaseUrl + "movie/\(ID)/credits?" + "api_key=\(Configs.Network.apiKey)")!
         let task = URLSession.shared.dataTask(with: url, completionHandler: {data, response, error in
             if error != nil || data == nil {
                     print("Client error!")
@@ -95,6 +95,37 @@ class ApiService {
                     let result = try JSONDecoder().decode(CastList.self, from: data!)
                     for i in 0...2 {
                         print(result.cast[i].name)
+                    }
+                } catch {
+                    print("JSON error: \(error.localizedDescription)")
+                }
+            }
+        )
+        task.resume()
+    }
+    
+    func getGenreList() -> Void {
+        let url = URL(string: Configs.Network.apiBaseUrl + "genre/movie/list" + "?api_key=\(Configs.Network.apiKey)")!
+        let task = URLSession.shared.dataTask(with: url, completionHandler: {data, response, error in
+            if error != nil || data == nil {
+                    print("Client error!")
+                    return
+                }
+
+                guard let response = response as? HTTPURLResponse, (200...299).contains(response.statusCode) else {
+                    print("Server error!")
+                    return
+                }
+
+                guard let mime = response.mimeType, mime == "application/json" else {
+                    print("Wrong MIME type!")
+                    return
+                }
+
+                do {
+                    let result = try JSONDecoder().decode(GenreList.self, from: data!)
+                    for i in 0...2 {
+                        print(result.genres[i].name)
                     }
                 } catch {
                     print("JSON error: \(error.localizedDescription)")

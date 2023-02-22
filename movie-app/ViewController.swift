@@ -14,6 +14,7 @@ class ViewController: UIViewController {
         
         ApiService.shareInstance.getPopularMovieList(page: 1)
         ApiService.shareInstance.getUpcomingMovieList(page: 1)
+        ApiService.shareInstance.getGenreList()
     }
 
 

@@ -11,7 +11,7 @@ class ApiService {
     static let shareInstance = ApiService()
 
     
-    func getPopularMovieList(page: Int) -> Void {
+    func getPopularMovieList(page: Int, onSuccess: @escaping ((PopularMovieList?) -> Void), onFailure: @escaping (String) -> Void){
         let url = URL(string: Configs.Network.apiBaseUrl + "movie/popular?" + "api_key=\(Configs.Network.apiKey)" + "&page=\(page)")!
         let task = URLSession.shared.dataTask(with: url, completionHandler: {data, response, error in
             if error != nil || data == nil {
@@ -31,18 +31,16 @@ class ApiService {
 
                 do {
                     let result = try JSONDecoder().decode(PopularMovieList.self, from: data!)
-                    for i in 0...2 {
-                        print(result.results[i].title)
-                    }
+                    onSuccess(result)
                 } catch {
-                    print("JSON error: \(error)")
+                    onFailure("JSON error: \(error.localizedDescription)")
                 }
             }
         )
         task.resume()
     }
     
-    func getUpcomingMovieList(page: Int) -> Void {
+    func getUpcomingMovieList(page: Int, onSuccess: @escaping ((UpcomingMovieList?) -> Void), onFailure: @escaping (String) -> Void){
         let url = URL(string: Configs.Network.apiBaseUrl + "movie/upcoming?" + "api_key=\(Configs.Network.apiKey)" + "&page=\(page)")!
         let task = URLSession.shared.dataTask(with: url, completionHandler: {data, response, error in
             if error != nil || data == nil {
@@ -62,18 +60,16 @@ class ApiService {
 
                 do {
                     let result = try JSONDecoder().decode(UpcomingMovieList.self, from: data!)
-                    for i in 0...2 {
-                        print(result.results[i].title)
-                    }
+                    onSuccess(result)
                 } catch {
-                    print("JSON error: \(error.localizedDescription)")
+                    onFailure("JSON error: \(error.localizedDescription)")
                 }
             }
         )
         task.resume()
     }
     
-    func getCastList(ID: Int) -> Void {
+    func getCastList(ID: Int, onSuccess: @escaping ((CastList?) -> Void), onFailure: @escaping (String) -> Void) {
         let url = URL(string: Configs.Network.apiBaseUrl + "movie/\(ID)/credits?" + "api_key=\(Configs.Network.apiKey)")!
         let task = URLSession.shared.dataTask(with: url, completionHandler: {data, response, error in
             if error != nil || data == nil {
@@ -93,18 +89,16 @@ class ApiService {
 
                 do {
                     let result = try JSONDecoder().decode(CastList.self, from: data!)
-                    for i in 0...2 {
-                        print(result.cast[i].name)
-                    }
+                    onSuccess(result)
                 } catch {
-                    print("JSON error: \(error.localizedDescription)")
+                    onFailure("JSON error: \(error.localizedDescription)")
                 }
             }
         )
         task.resume()
     }
     
-    func getGenreList() -> Void {
+    func getGenreList(onSuccess: @escaping ((GenreList?) -> Void), onFailure: @escaping (String) -> Void) {
         let url = URL(string: Configs.Network.apiBaseUrl + "genre/movie/list" + "?api_key=\(Configs.Network.apiKey)")!
         let task = URLSession.shared.dataTask(with: url, completionHandler: {data, response, error in
             if error != nil || data == nil {
@@ -124,11 +118,9 @@ class ApiService {
 
                 do {
                     let result = try JSONDecoder().decode(GenreList.self, from: data!)
-                    for i in 0...2 {
-                        print(result.genres[i].name)
-                    }
+                    onSuccess(result)
                 } catch {
-                    print("JSON error: \(error.localizedDescription)")
+                    onFailure("JSON error: \(error.localizedDescription)")
                 }
             }
         )

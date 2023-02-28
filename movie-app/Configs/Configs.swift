@@ -12,6 +12,7 @@ struct Configs {
     struct Network {
            static let apiBaseUrl = "https://api.themoviedb.org/3/"
            static let apiKey = "26763d7bf2e94098192e629eb975dab0"
+        static let apiImageUrl = "https://image.tmdb.org/t/p/original"
        }
     
     struct BaseDimensions {

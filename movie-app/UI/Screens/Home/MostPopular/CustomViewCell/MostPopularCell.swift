@@ -20,21 +20,22 @@ class MostPopularCell: UICollectionViewCell {
     var task: URLSessionDataTask?
     
     override func prepareForReuse() {
-        task?.cancel()
+        if (mostPopularImageView.image != nil) {
+            task?.cancel()
+        }
     }
     
     var data: Movie? {
         didSet {
             guard let data = data else { return }
             mostPopularImageView.image = nil
-            loadFrom(URLAddress: Configs.Network.apiImageUrl + data.posterPath)
+            loadFrom(URLAddress: Configs.Network.apiImageUrl + (data.backdropPath ?? ""))
             mostPopularImageView.layer.cornerRadius = 30
             mostPopularLabel.text = data.title
             mostPopularLabel.numberOfLines = 3
             imdbView.backgroundColor = UIColor(red: 0.961, green: 0.773, blue: 0.094, alpha: 1)
             imdbView.layer.cornerRadius = 10
-            scoreLabel.text = "\(data.voteAverage)"
-            print("SonLT === \(data.posterPath)")
+            scoreLabel.text = "\(data.voteAverage ?? 0)"
         }
     }
     
@@ -69,7 +70,7 @@ class MostPopularCell: UICollectionViewCell {
         
         task?.resume()
     }
-   
 }
+
 
 

@@ -13,8 +13,6 @@ class UpcomingCell: UICollectionViewCell {
     
     var task: URLSessionDataTask?
     
-    
-    
     override func prepareForReuse() {
         task?.cancel()
     }
@@ -22,7 +20,8 @@ class UpcomingCell: UICollectionViewCell {
     var data: Movie? {
         didSet {
             guard let data = data else { return }
-            loadFrom(URLAddress: Configs.Network.apiImageUrl + data.posterPath)
+            upcomingImageView.image = nil
+            loadFrom(URLAddress: Configs.Network.apiImageUrl + (data.posterPath ?? ""))
             upcomingImageView.layer.cornerRadius = 30
         }
     }
@@ -55,6 +54,7 @@ class UpcomingCell: UICollectionViewCell {
         }
         task?.resume()
     }
+    
     var upcomingImageCache: [String: UIImage] = [:]
 }
 

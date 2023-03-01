@@ -20,8 +20,7 @@ class ViewController: UIViewController {
     @IBOutlet weak var mostPopularCollectionView: UICollectionView!
     
     @IBOutlet weak var homeView: UIView!
-    
-    
+        
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -71,7 +70,9 @@ class ViewController: UIViewController {
             print(errorMessage)
         }
         homeView.setGradientBackground(colorLeading: UIColor(red: 0.169, green: 0.345, blue: 0.463, alpha: 1), colorTrailing: UIColor(red: 0.306, green: 0.263, blue: 0.463, alpha: 1))
+        
     }
+    
 }
     
 extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate {
@@ -95,6 +96,16 @@ extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate {
                 return cell
             }
         }
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let detailviewController = storyboard?.instantiateViewController(withIdentifier: "detailViewController") as! DetailViewController
+        if (collectionView == mostPopularCollectionView) {
+            detailviewController.id = popularMovieList[indexPath.row].id
+        }
+        else {
+            detailviewController.id = upcomingMovieList[indexPath.row].id
+        }
+        self.navigationController?.pushViewController(detailviewController, animated: true)
+    }
 }
 
 extension UIView {
@@ -105,7 +116,6 @@ extension UIView {
         gradientLayer.endPoint = CGPoint(x: 1.0, y: 0.5)
         gradientLayer.locations = [0, 1]
         gradientLayer.frame = bounds
-
        layer.insertSublayer(gradientLayer, at: 0)
     }
 }

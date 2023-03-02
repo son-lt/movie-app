@@ -35,7 +35,7 @@ class MostPopularCell: UICollectionViewCell {
             mostPopularLabel.numberOfLines = 3
             imdbView.backgroundColor = UIColor(red: 0.961, green: 0.773, blue: 0.094, alpha: 1)
             imdbView.layer.cornerRadius = 10
-            scoreLabel.text = "\(data.voteAverage ?? 0)"
+            scoreLabel.text = "\(round((data.voteAverage ?? 0) * 10) / 10)"
         }
     }
     

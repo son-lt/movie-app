@@ -13,11 +13,20 @@ class DetailViewController: UIViewController {
     
     var detailMovie: DetailMovie?
     
+    let detailBottomSheetViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "detailBottomSheetViewController") as! DetailBottomSheetViewController
+    
+    @IBOutlet weak var openButton: UIButton!
+    
     @IBOutlet weak var backgroundImageView: UIImageView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        if (id != nil) {
+        
+        let yourBackImage = UIImage(systemName: "arrow.uturn.backward")
+        self.navigationController?.navigationBar.backIndicatorImage = yourBackImage
+        self.navigationController?.navigationBar.backIndicatorTransitionMaskImage = yourBackImage
+        self.navigationController?.navigationBar.tintColor = .white.withAlphaComponent(0.75)
+        
             ApiService.shareInstance.getDetailMovie(ID: id!) {
                 [weak self] data in
                 guard let strongSelf = self else {
@@ -26,12 +35,34 @@ class DetailViewController: UIViewController {
                 strongSelf.detailMovie = data
                 DispatchQueue.main.async {
                     strongSelf.backgroundImageView.loadFrom(URLAddress: Configs.Network.apiImageUrl + (strongSelf.detailMovie?.posterPath ?? ""))
-                    strongSelf.present(<#T##viewControllerToPresent: UIViewController##UIViewController#>, animated: <#T##Bool#>)
+                    
+                    if let sheet = strongSelf.detailBottomSheetViewController.sheetPresentationController {
+                        sheet.detents = [.medium(), .large()]
+                        sheet.prefersGrabberVisible = true
+                        sheet.preferredCornerRadius = 50
+                    }
+
+                    strongSelf.detailBottomSheetViewController.detailMovie = strongSelf.detailMovie
+                    
+                    strongSelf.present(strongSelf.detailBottomSheetViewController, animated: true)
+                   
                 }
             } onFailure: { errorMessage in
                 print(errorMessage)
             }
+        let swipeUp = UISwipeGestureRecognizer(target: self, action: #selector(openBottomSheetView))
+        swipeUp.direction = .up
+        self.openButton.addGestureRecognizer(swipeUp)
+    }
+    
+    @IBAction func openBottomSheetView() {
+        if let sheet = self.detailBottomSheetViewController.sheetPresentationController {
+            sheet.detents = [.medium(), .large()]
+            sheet.prefersGrabberVisible = true
+            sheet.preferredCornerRadius = 50
         }
+        
+        self.present(self.detailBottomSheetViewController, animated: true)
     }
 }
 extension UIImageView {

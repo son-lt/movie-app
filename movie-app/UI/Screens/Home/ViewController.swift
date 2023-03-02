@@ -45,7 +45,7 @@ class ViewController: UIViewController {
             upcomingFlowLayout.minimumLineSpacing = 0
             upcomingFlowLayout.minimumInteritemSpacing = 0
             upcomingFlowLayout.sectionInset = UIEdgeInsets(top: 0, left: 19, bottom: 0, right: 0)
-            upcomingFlowLayout.itemSize = CGSize(width: mostPopularCollectionView.frame.width * 0.3, height: mostPopularCollectionView.frame.height)
+            upcomingFlowLayout.itemSize = CGSize(width: mostPopularCollectionView.frame.width * 1/3, height: mostPopularCollectionView.frame.height)
         }
         
         ApiService.shareInstance.getPopularMovieList(page: 1) { [weak self] data in
@@ -70,7 +70,6 @@ class ViewController: UIViewController {
             print(errorMessage)
         }
         homeView.setGradientBackground(colorLeading: UIColor(red: 0.169, green: 0.345, blue: 0.463, alpha: 1), colorTrailing: UIColor(red: 0.306, green: 0.263, blue: 0.463, alpha: 1))
-        
     }
     
 }

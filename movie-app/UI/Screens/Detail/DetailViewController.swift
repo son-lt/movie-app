@@ -22,9 +22,9 @@ class DetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let yourBackImage = UIImage(systemName: "arrow.uturn.backward")
-        self.navigationController?.navigationBar.backIndicatorImage = yourBackImage
-        self.navigationController?.navigationBar.backIndicatorTransitionMaskImage = yourBackImage
+        let backImage = UIImage(systemName: "arrow.uturn.backward")
+        self.navigationController?.navigationBar.backIndicatorImage = backImage
+        self.navigationController?.navigationBar.backIndicatorTransitionMaskImage = backImage
         self.navigationController?.navigationBar.tintColor = .white.withAlphaComponent(0.75)
         
             ApiService.shareInstance.getDetailMovie(ID: id!) {

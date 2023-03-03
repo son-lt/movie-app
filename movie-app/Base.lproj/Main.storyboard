@@ -385,10 +385,10 @@
             </objects>
             <point key="canvasLocation" x="1578" y="-767"/>
         </scene>
-        <!--Custom View Controller-->
+        <!--Custom Tab Bar Controller-->
         <scene sceneID="Lct-eN-N5h">
             <objects>
-                <tabBarController automaticallyAdjustsScrollViewInsets="NO" id="U4P-iO-Lme" customClass="CustomViewController" customModule="movie_app" customModuleProvider="target" sceneMemberID="viewController">
+                <tabBarController automaticallyAdjustsScrollViewInsets="NO" id="U4P-iO-Lme" customClass="CustomTabBarController" customModule="movie_app" customModuleProvider="target" sceneMemberID="viewController">
                     <toolbarItems/>
                     <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="wDr-NX-XMs">
                         <rect key="frame" x="0.0" y="0.0" width="1000" height="1000"/>

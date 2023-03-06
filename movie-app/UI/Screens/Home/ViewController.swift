@@ -21,9 +21,12 @@ class ViewController: UIViewController {
     
     @IBOutlet weak var homeView: UIView!
         
+    @IBOutlet weak var searchTextField: UITextField!
+    
+    @IBOutlet weak var mostPopularPageControl: UIPageControl!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         searchBarView.layer.cornerRadius = 15
         
         mostPopularCollectionView.delegate = self
@@ -55,6 +58,7 @@ class ViewController: UIViewController {
             strongSelf.popularMovieList = data?.results ?? []
             DispatchQueue.main.async {
                 strongSelf.mostPopularCollectionView.reloadData()
+                strongSelf.mostPopularPageControl.numberOfPages = strongSelf.popularMovieList.count
             }
         } onFailure: { errorMessage in
             print(errorMessage)
@@ -70,12 +74,21 @@ class ViewController: UIViewController {
             print(errorMessage)
         }
         homeView.setGradientBackground(colorLeading: UIColor(red: 0.169, green: 0.345, blue: 0.463, alpha: 1), colorTrailing: UIColor(red: 0.306, green: 0.263, blue: 0.463, alpha: 1))
+        
+        searchTextField.attributedPlaceholder = NSAttributedString(string: "Search", attributes: [NSAttributedString.Key.foregroundColor: UIColor.white.withAlphaComponent(0.5)])
+    
     }
     
 }
     
 extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate {
         
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        for cell in mostPopularCollectionView.visibleCells {
+            mostPopularPageControl.currentPage = mostPopularCollectionView.indexPath(for: cell)?.row ?? 0
+        }
+    }
+    
         func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
             if (collectionView == mostPopularCollectionView) {
                 return popularMovieList.count
@@ -85,7 +98,7 @@ extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate {
         
         func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
             if (collectionView == mostPopularCollectionView) {
-                let cell = mostPopularCollectionView.dequeueReusableCell(withReuseIdentifier: "mostPopularCell", for: indexPath) as! MostPopularCell
+                let cell = (mostPopularCollectionView.dequeueReusableCell(withReuseIdentifier: "mostPopularCell", for: indexPath) as! MostPopularCell)
                 cell.data = self.popularMovieList[indexPath.row]
                 return cell
             }

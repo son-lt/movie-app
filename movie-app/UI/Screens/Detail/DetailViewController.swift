@@ -19,14 +19,13 @@ class DetailViewController: UIViewController {
     
     @IBOutlet weak var backgroundImageView: UIImageView!
     
+    @IBOutlet weak var loadingIndicator: UIActivityIndicatorView!
+    
+    @IBOutlet var detailView: UIView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        let backImage = UIImage(systemName: "arrow.uturn.backward")
-        self.navigationController?.navigationBar.backIndicatorImage = backImage
-        self.navigationController?.navigationBar.backIndicatorTransitionMaskImage = backImage
-        self.navigationController?.navigationBar.tintColor = .white.withAlphaComponent(0.75)
-        
+        loadingIndicator.startAnimating()
             ApiService.shareInstance.getDetailMovie(ID: id!) {
                 [weak self] data in
                 guard let strongSelf = self else {
@@ -34,7 +33,7 @@ class DetailViewController: UIViewController {
                 }
                 strongSelf.detailMovie = data
                 DispatchQueue.main.async {
-                    strongSelf.backgroundImageView.loadFrom(URLAddress: Configs.Network.apiImageUrl + (strongSelf.detailMovie?.posterPath ?? ""))
+                    strongSelf.loadFrom(URLAddress: Configs.Network.apiImageUrl + (strongSelf.detailMovie?.posterPath ?? ""))
                     
                     if let sheet = strongSelf.detailBottomSheetViewController.sheetPresentationController {
                         sheet.detents = [.medium(), .large()]
@@ -50,9 +49,12 @@ class DetailViewController: UIViewController {
             } onFailure: { errorMessage in
                 print(errorMessage)
             }
-        let swipeUp = UISwipeGestureRecognizer(target: self, action: #selector(openBottomSheetView))
-        swipeUp.direction = .up
-        self.openButton.addGestureRecognizer(swipeUp)
+        
+        setupBackButton()
+        
+        setupReopenBottomSheetButton()
+        
+        detailView.setGradientBackground(colorLeading: UIColor(red: 0.169, green: 0.345, blue: 0.463, alpha: 1), colorTrailing: UIColor(red: 0.306, green: 0.263, blue: 0.463, alpha: 1))
     }
     
     @IBAction func openBottomSheetView() {
@@ -64,8 +66,20 @@ class DetailViewController: UIViewController {
         
         self.present(self.detailBottomSheetViewController, animated: true)
     }
-}
-extension UIImageView {
+    
+    func setupBackButton() {
+        let backImage = UIImage(systemName: "arrow.uturn.backward")
+        self.navigationController?.navigationBar.backIndicatorImage = backImage
+        self.navigationController?.navigationBar.backIndicatorTransitionMaskImage = backImage
+        self.navigationController?.navigationBar.tintColor = .white.withAlphaComponent(0.75)
+    }
+    
+    func setupReopenBottomSheetButton() {
+        let swipeUp = UISwipeGestureRecognizer(target: self, action: #selector(openBottomSheetView))
+        swipeUp.direction = .up
+        self.openButton.addGestureRecognizer(swipeUp)
+    }
+    
     func loadFrom(URLAddress: String) {
         guard let url = URL(string: URLAddress) else {
             return
@@ -84,9 +98,12 @@ extension UIImageView {
             
             DispatchQueue.main.async {
                 let image = UIImage(data: data)
-                self.image = image
+                self.backgroundImageView.image = image
+                self.loadingIndicator.stopAnimating()
+                self.loadingIndicator.isHidden = true
             }
         }
         task.resume()
     }
 }
+    

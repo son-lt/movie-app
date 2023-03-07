@@ -12,7 +12,7 @@ class MoviesView: UIView {
     
     let iconImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.contentMode = .scaleAspectFit
+        imageView.contentMode = .scaleAspectFill
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.image = UIImage(systemName: "film")
         imageView.tintColor = UIColor(white: 1, alpha: 0.75)
@@ -50,11 +50,11 @@ class MoviesView: UIView {
         
         iconImageView.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive =  true
         iconImageView.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
-        iconImageView.widthAnchor.constraint(equalTo: self.widthAnchor, multiplier: 0.6).isActive = true
+        iconImageView.widthAnchor.constraint(equalTo: self.widthAnchor, multiplier: 0.5).isActive = true
         iconImageView.heightAnchor.constraint(equalTo: iconImageView.heightAnchor, multiplier: 1).isActive = true
         
         labelText.centerXAnchor.constraint(equalTo: iconImageView.centerXAnchor).isActive = true
-        labelText.topAnchor.constraint(equalTo: iconImageView.bottomAnchor, constant: 10).isActive = true
+        labelText.topAnchor.constraint(equalTo: iconImageView.bottomAnchor, constant: 12).isActive = true
         labelText.widthAnchor.constraint(equalTo: self.widthAnchor, multiplier: 0.8).isActive = true
     }
 

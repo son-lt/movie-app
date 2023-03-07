@@ -142,7 +142,6 @@
 			isa = PBXGroup;
 			children = (
 				07D5490729AF657C00BC9A98 /* Detail */,
-				07726AC929B0BDB000F7B489 /* CustomViewCell */,
 				0740092B29A5B2B6000A3F1C /* Home */,
 			);
 			path = Screens;
@@ -199,6 +198,7 @@
 			children = (
 				07D5490529AF26A500BC9A98 /* DetailViewController.swift */,
 				07D5490829AF659600BC9A98 /* DetailBottomSheetViewController.swift */,
+				07726AC929B0BDB000F7B489 /* CustomViewCell */,
 			);
 			path = Detail;
 			sourceTree = "<group>";

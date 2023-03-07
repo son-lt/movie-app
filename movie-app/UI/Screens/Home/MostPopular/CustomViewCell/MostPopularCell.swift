@@ -17,7 +17,11 @@ class MostPopularCell: UICollectionViewCell {
     
     @IBOutlet weak var scoreLabel: UILabel!
     
+    @IBOutlet weak var loadingIndicator: UIActivityIndicatorView!
+    
     var task: URLSessionDataTask?
+    
+    var mostPopularImageCache: [String: UIImage] = [:]
     
     override func prepareForReuse() {
         if (mostPopularImageView.image != nil) {
@@ -29,17 +33,21 @@ class MostPopularCell: UICollectionViewCell {
         didSet {
             guard let data = data else { return }
             mostPopularImageView.image = nil
-            loadFrom(URLAddress: Configs.Network.apiImageUrl + (data.backdropPath ?? ""))
-            mostPopularImageView.layer.cornerRadius = 30
-            mostPopularLabel.text = data.title
-            mostPopularLabel.numberOfLines = 3
-            imdbView.backgroundColor = UIColor(red: 0.961, green: 0.773, blue: 0.094, alpha: 1)
-            imdbView.layer.cornerRadius = 10
-            scoreLabel.text = "\(round((data.voteAverage ?? 0) * 10) / 10)"
+            loadingIndicator.isHidden = false
+            loadingIndicator.startAnimating()
+            setupView(data: data)
         }
     }
     
-    var mostPopularImageCache: [String: UIImage] = [:]
+    func setupView(data: Movie) {
+        loadFrom(URLAddress: Configs.Network.apiImageUrl + (data.backdropPath ?? ""))
+        mostPopularImageView.layer.cornerRadius = 30
+        mostPopularLabel.text = data.title
+        mostPopularLabel.numberOfLines = 3
+        imdbView.backgroundColor = UIColor(red: 0.961, green: 0.773, blue: 0.094, alpha: 1)
+        imdbView.layer.cornerRadius = 10
+        scoreLabel.text = "\(round((data.voteAverage ?? 0) * 10) / 10)"
+    }
     
     func loadFrom(URLAddress: String) {
         guard let url = URL(string: URLAddress) else {
@@ -65,6 +73,8 @@ class MostPopularCell: UICollectionViewCell {
                 let image = UIImage(data: data)
                 self.mostPopularImageCache[url.absoluteString] = image
                 self.mostPopularImageView.image = image
+                self.mostPopularImageView.stopAnimating()
+                self.loadingIndicator.isHidden = true
             }
         }
         

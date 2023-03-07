@@ -15,6 +15,8 @@ class CastViewCell: UICollectionViewCell {
     
     @IBOutlet weak var roleLabel: UILabel!
     
+    @IBOutlet weak var loadingIndicator: UIActivityIndicatorView!
+    
     var task: URLSessionDataTask?
     
     var castImageCache: [String: UIImage] = [:]
@@ -29,16 +31,20 @@ class CastViewCell: UICollectionViewCell {
         didSet {
             guard let data = data else { return }
             castImageView.image = nil
-            if (data.profilePath != nil && data.profilePath != "") {
-                loadFrom(URLAddress: Configs.Network.apiImageUrl + (data.profilePath ?? ""))
-            }
-            else {
-                castImageView.image = UIImage(systemName: "person.fill")
-            }
-            castImageView.layer.cornerRadius = 15
-            actorLabel.text = data.name
-            roleLabel.text = data.character
+            setupView(data: data)
         }
+    }
+    
+    func setupView(data: Cast) {
+        if (data.profilePath != nil && data.profilePath != "") {
+            loadFrom(URLAddress: Configs.Network.apiImageUrl + (data.profilePath ?? ""))
+        }
+        else {
+            castImageView.image = UIImage(systemName: "person.fill")
+        }
+        castImageView.layer.cornerRadius = 15
+        actorLabel.text = data.name
+        roleLabel.text = data.character
     }
     
     func loadFrom(URLAddress: String) {

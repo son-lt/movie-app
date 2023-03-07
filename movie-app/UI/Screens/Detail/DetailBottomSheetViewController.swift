@@ -39,14 +39,13 @@ class DetailBottomSheetViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        genre1View.layer.cornerRadius = 12
-        genre2View.layer.cornerRadius = 12
-        imdbView.layer.cornerRadius = 12
+        setupTitleLabel()
         
-        castCollectionView.delegate = self
-        castCollectionView.dataSource = self
+        setupGenreLabel()
         
-        imdbView.backgroundColor = UIColor(red: 0.961, green: 0.773, blue: 0.094, alpha: 1)
+        setupCastCollectionView()
+        
+        setupIMDBLabel()
         
         ApiService.shareInstance.getCastList(ID: detailMovie?.id ?? 0) {
             [weak self] data in
@@ -61,6 +60,13 @@ class DetailBottomSheetViewController: UIViewController {
                 print(errorMessage)
             }
         
+        detailBottomSheetView.setGradientBackground(colorLeading: UIColor(red: 0.169, green: 0.345, blue: 0.463, alpha: 1), colorTrailing: UIColor(red: 0.306, green: 0.263, blue: 0.463, alpha: 1))
+    }
+    
+    func setupCastCollectionView() {
+        castCollectionView.delegate = self
+        castCollectionView.dataSource = self
+        
         if let castFlowLayout = castCollectionView.collectionViewLayout as? UICollectionViewFlowLayout {
             castFlowLayout.scrollDirection = .horizontal
             castFlowLayout.minimumLineSpacing = 0
@@ -68,7 +74,9 @@ class DetailBottomSheetViewController: UIViewController {
             castFlowLayout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
             castFlowLayout.itemSize = CGSize(width: castCollectionView.frame.width * 1/10, height: castCollectionView.frame.height * 0.8)
         }
-        
+    }
+    
+    func setupTitleLabel() {
         if ((detailMovie?.title ?? "").contains(": ")) {
             let splitText = (detailMovie?.title ?? "").components(separatedBy: ": ")
             title1Label.text = splitText[0]
@@ -80,6 +88,12 @@ class DetailBottomSheetViewController: UIViewController {
                 viewWithTag.removeFromSuperview()
             }
         }
+    }
+    
+    func setupGenreLabel() {
+        genre1View.layer.cornerRadius = 12
+        genre2View.layer.cornerRadius = 12
+        
         genre1Label.text = detailMovie?.genres?[0].name
         if (detailMovie?.genres?.count ?? 0 > 1) {
             genre2Label.text = detailMovie?.genres?[1].name
@@ -88,10 +102,14 @@ class DetailBottomSheetViewController: UIViewController {
                 viewWithTag.removeFromSuperview()
             }
         }
+    }
+    
+    func setupIMDBLabel() {
+        imdbView.layer.cornerRadius = 12
+        imdbView.backgroundColor = UIColor(red: 0.961, green: 0.773, blue: 0.094, alpha: 1)
+        
         scoreLabel.text = "\(round((detailMovie?.voteAverage ?? 0) * 10) / 10)"
         overviewLabel.text = detailMovie?.overview
-        
-        detailBottomSheetView.setGradientBackground(colorLeading: UIColor(red: 0.169, green: 0.345, blue: 0.463, alpha: 1), colorTrailing: UIColor(red: 0.306, green: 0.263, blue: 0.463, alpha: 1))
     }
 }
 

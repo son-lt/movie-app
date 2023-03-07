@@ -11,7 +11,11 @@ class UpcomingCell: UICollectionViewCell {
     
     @IBOutlet weak var upcomingImageView: UIImageView!
     
+    @IBOutlet weak var loadingIndicator: UIActivityIndicatorView!
+    
     var task: URLSessionDataTask?
+    
+    var upcomingImageCache: [String: UIImage] = [:]
     
     override func prepareForReuse() {
         task?.cancel()
@@ -21,6 +25,8 @@ class UpcomingCell: UICollectionViewCell {
         didSet {
             guard let data = data else { return }
             upcomingImageView.image = nil
+            loadingIndicator.isHidden = false
+            loadingIndicator.startAnimating()
             loadFrom(URLAddress: Configs.Network.apiImageUrl + (data.posterPath ?? ""))
             upcomingImageView.layer.cornerRadius = 30
         }
@@ -50,12 +56,12 @@ class UpcomingCell: UICollectionViewCell {
                 let image = UIImage(data: data)
                 self.upcomingImageCache[url.absoluteString] = image
                 self.upcomingImageView.image = image
+                self.loadingIndicator.stopAnimating()
+                self.loadingIndicator.isHidden = true
             }
         }
         task?.resume()
     }
-    
-    var upcomingImageCache: [String: UIImage] = [:]
 }
 
 

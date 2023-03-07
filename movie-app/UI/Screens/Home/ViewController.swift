@@ -11,7 +11,9 @@ import UIKit
 class ViewController: UIViewController {
     
     var popularMovieList : [Movie] = []
+    
     var upcomingMovieList : [Movie] = []
+    
     
     @IBOutlet weak var searchBarView: UIView!
     
@@ -25,31 +27,17 @@ class ViewController: UIViewController {
     
     @IBOutlet weak var mostPopularPageControl: UIPageControl!
     
+    @IBOutlet weak var upcomingPageControl: UIPageControl!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        searchBarView.layer.cornerRadius = 15
+        setupSearchBar()
         
-        mostPopularCollectionView.delegate = self
-        mostPopularCollectionView.dataSource = self
+        setupMostPopularCollectionView()
         
-        upcomingCollectionView.delegate = self
-        upcomingCollectionView.dataSource = self
+        setupUpcomingCollectionView()
         
-        if let mostPopularFlowLayout = mostPopularCollectionView.collectionViewLayout as? UICollectionViewFlowLayout {
-            mostPopularFlowLayout.scrollDirection = .horizontal
-            mostPopularFlowLayout.minimumLineSpacing = 0
-            mostPopularFlowLayout.minimumInteritemSpacing = 0
-            mostPopularFlowLayout.sectionInset = UIEdgeInsets(top: 0, left: 19, bottom: 0, right: 0)
-            mostPopularFlowLayout.itemSize = CGSize(width: mostPopularCollectionView.frame.width * 0.7, height: mostPopularCollectionView.frame.height * 0.8)
-        }
-        
-        if let upcomingFlowLayout = upcomingCollectionView.collectionViewLayout as? UICollectionViewFlowLayout {
-            upcomingFlowLayout.scrollDirection = .horizontal
-            upcomingFlowLayout.minimumLineSpacing = 0
-            upcomingFlowLayout.minimumInteritemSpacing = 0
-            upcomingFlowLayout.sectionInset = UIEdgeInsets(top: 0, left: 19, bottom: 0, right: 0)
-            upcomingFlowLayout.itemSize = CGSize(width: mostPopularCollectionView.frame.width * 1/3, height: mostPopularCollectionView.frame.height)
-        }
+        homeView.setGradientBackground(colorLeading: UIColor(red: 0.169, green: 0.345, blue: 0.463, alpha: 1), colorTrailing: UIColor(red: 0.306, green: 0.263, blue: 0.463, alpha: 1))
         
         ApiService.shareInstance.getPopularMovieList(page: 1) { [weak self] data in
             guard let strongSelf = self else {
@@ -69,16 +57,45 @@ class ViewController: UIViewController {
             strongSelf.upcomingMovieList = data?.results ?? []
             DispatchQueue.main.async {
                 strongSelf.upcomingCollectionView.reloadData()
+                strongSelf.upcomingPageControl.numberOfPages = strongSelf.upcomingMovieList.count
             }
         } onFailure: { errorMessage in
             print(errorMessage)
         }
-        homeView.setGradientBackground(colorLeading: UIColor(red: 0.169, green: 0.345, blue: 0.463, alpha: 1), colorTrailing: UIColor(red: 0.306, green: 0.263, blue: 0.463, alpha: 1))
-        
-        searchTextField.attributedPlaceholder = NSAttributedString(string: "Search", attributes: [NSAttributedString.Key.foregroundColor: UIColor.white.withAlphaComponent(0.5)])
-    
     }
     
+    
+    func setupSearchBar() {
+        searchBarView.layer.cornerRadius = 15
+        
+        searchTextField.attributedPlaceholder = NSAttributedString(string: "Search", attributes: [NSAttributedString.Key.foregroundColor: UIColor.white.withAlphaComponent(0.5)])
+    }
+    
+    func setupMostPopularCollectionView() {
+        mostPopularCollectionView.delegate = self
+        mostPopularCollectionView.dataSource = self
+        
+        if let mostPopularFlowLayout = mostPopularCollectionView.collectionViewLayout as? UICollectionViewFlowLayout {
+            mostPopularFlowLayout.scrollDirection = .horizontal
+            mostPopularFlowLayout.minimumLineSpacing = 0
+            mostPopularFlowLayout.minimumInteritemSpacing = 0
+            mostPopularFlowLayout.sectionInset = UIEdgeInsets(top: 0, left: 19, bottom: 0, right: 0)
+            mostPopularFlowLayout.itemSize = CGSize(width: mostPopularCollectionView.frame.width * 0.7, height: mostPopularCollectionView.frame.height * 0.8)
+        }
+    }
+    
+    func setupUpcomingCollectionView() {
+        upcomingCollectionView.delegate = self
+        upcomingCollectionView.dataSource = self
+        
+        if let upcomingFlowLayout = upcomingCollectionView.collectionViewLayout as? UICollectionViewFlowLayout {
+            upcomingFlowLayout.scrollDirection = .horizontal
+            upcomingFlowLayout.minimumLineSpacing = 0
+            upcomingFlowLayout.minimumInteritemSpacing = 0
+            upcomingFlowLayout.sectionInset = UIEdgeInsets(top: 0, left: 19, bottom: 0, right: 0)
+            upcomingFlowLayout.itemSize = CGSize(width: mostPopularCollectionView.frame.width * 1/3, height: mostPopularCollectionView.frame.height)
+        }
+    }
 }
     
 extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate {
@@ -87,8 +104,11 @@ extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate {
         for cell in mostPopularCollectionView.visibleCells {
             mostPopularPageControl.currentPage = mostPopularCollectionView.indexPath(for: cell)?.row ?? 0
         }
+        for cell in upcomingCollectionView.visibleCells {
+            upcomingPageControl.currentPage = upcomingCollectionView.indexPath(for: cell)?.row ?? 0
+        }
     }
-    
+
         func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
             if (collectionView == mostPopularCollectionView) {
                 return popularMovieList.count
